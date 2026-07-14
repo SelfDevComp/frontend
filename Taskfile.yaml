@@ -6,12 +6,12 @@ tasks:
       - task --list
     silent: true  
   
-  build-frontend:
+  build:
     desc: build frontend side for develope
     cmds:
       - docker build -t self-dev-frontend -f infra/Dockerfile .
 
-  dev-frontend:
+  dev:
     desc: up only frontend side of project and develope in real time
     cmds:
       - npm run dev

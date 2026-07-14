@@ -121,11 +121,11 @@
 import LandingHeader from '@/components/Header/LandingHeader.vue'
 
 const casdoorLogin = () => {
-  const clientId = '84ff2ce323d6584b9574'
+  const clientId = '73e7939ad345eee481f3'
   const redirectUri = 'https://self-dev.tech/auth/callback'
 
   const url =
-    `http://auth.self-dev.test/login/oauth/authorize` +
+    `http://auth.self-dev.tech/login/oauth/authorize` +
     `?client_id=${clientId}` +
     `&response_type=code` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}`
@@ -142,34 +142,6 @@ const features = [
   {
     title: 'Username or email login',
     text: 'Users can sign in with either identifier, which keeps the login form simple.',
-  },
-  {
-    title: 'Email verification',
-    text: 'Registration triggers a verification flow before login is allowed.',
-  },
-  {
-    title: 'Secure session cookies',
-    text: 'The backend sets HttpOnly access and refresh cookies after a successful login.',
-  },
-  {
-    title: 'Token refresh support',
-    text: 'Refresh tokens are stored server-side and used to issue new access tokens.',
-  },
-  {
-    title: 'Persistent light and dark mode',
-    text: 'Theme choice is saved in localStorage and applied across the app.',
-  },
-  {
-    title: 'Responsive glassmorphism UI',
-    text: 'The interface uses soft surfaces, blur, and responsive spacing across devices.',
-  },
-  {
-    title: 'Toast-based feedback',
-    text: 'Registration, login, and verification states surface through brief notifications.',
-  },
-  {
-    title: 'Container-ready deployment',
-    text: 'The project includes Docker, compose files, and Nginx configs for delivery.',
   },
 ]
 
@@ -191,51 +163,7 @@ const techStack = [
 const faqs = [
   {
     question: 'What is SelfDev?',
-    answer: 'A personal tracker built around habits, tasks, and goals with a clean auth flow.',
-  },
-  {
-    question: 'Do I need an account?',
-    answer: 'Yes. The app is centered on registration, verification, and sign-in.',
-  },
-  {
-    question: 'Can I log in with either username or email?',
-    answer: 'Yes. The login form accepts both formats.',
-  },
-  {
-    question: 'Why do I need to verify my email?',
-    answer: 'The backend requires verification before login is allowed.',
-  },
-  {
-    question: 'What happens after registration?',
-    answer: 'You are sent back to the login screen and prompted to verify your email.',
-  },
-  {
-    question: 'How are sessions handled?',
-    answer: 'The backend sets secure HttpOnly cookies for access and refresh tokens.',
-  },
-  {
-    question: 'Does the app remember my theme preference?',
-    answer: 'Yes. The current theme is stored in localStorage.',
-  },
-  {
-    question: 'Is the UI responsive?',
-    answer: 'Yes. The layout and header adapt to smaller screens.',
-  },
-  {
-    question: 'What powers the backend?',
-    answer: 'Go, PostgreSQL, Redis, JWT, bcrypt, Zap, and Resend.',
-  },
-  {
-    question: 'Can I self-host it?',
-    answer: 'Yes. The repository includes Docker and docker-compose setup.',
-  },
-  {
-    question: 'Is this a single-page app?',
-    answer: 'Yes. The frontend uses Vue Router for navigation.',
-  },
-  {
-    question: 'What kind of design does it use?',
-    answer: 'A minimal glassmorphism style with soft gradients and strong typography.',
+    answer: 'A personal tracker built around habits, tasks, and goals.',
   },
 ]
 </script>
