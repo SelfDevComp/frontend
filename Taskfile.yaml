@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true  
+  
+  build-frontend:
+    desc: build frontend side for develope
+    cmds:
+      - docker build -t self-dev-frontend -f infra/Dockerfile .
