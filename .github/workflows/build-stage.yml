@@ -43,7 +43,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.INFRA_TOKEN }}" \
             https://api.github.com/repos/selfdevcomp/infrastructure/dispatches \
             -d '{
-              "event_type":"deploy-stage",
+              "event_type":"frontend-deploy-stage",
               "client_payload":{
                 "image":"'"$IMAGE:${{ github.sha }}"'"
               }
