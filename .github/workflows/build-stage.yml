@@ -14,7 +14,6 @@ env:
 
 jobs:
   build-stage:
-    name: Build Stage Image
     runs-on: ubuntu-latest
 
     steps:

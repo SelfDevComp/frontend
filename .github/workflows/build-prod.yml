@@ -14,7 +14,6 @@ env:
 
 jobs:
   build-prod:
-    name: Build Production Image
     runs-on: ubuntu-latest
 
     steps:
