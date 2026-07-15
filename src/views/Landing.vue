@@ -6,7 +6,7 @@
   <main class="landing-page">
     <section class="hero">
       <div class="hero-content">
-        <p class="eyebrow">SelfDev</p>
+        <p class="eyebrow">SelfDevchik</p>
         <h1>Track everything that matters.</h1>
         <p class="hero-copy">
           A clean self-development tracker for habits, tasks, and goals. Create your account, verify

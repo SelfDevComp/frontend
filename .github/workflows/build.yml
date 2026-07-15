@@ -1,53 +1,50 @@
-name: Build Docker image
+name: Build Stage Image
 
 on:
   pull_request:
     branches:
       - dev
-      - main
 
 permissions:
   contents: read
   packages: write
 
-
 env:
   IMAGE: ghcr.io/selfdevcomp/frontend
 
-
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Build
+
+      - name: Build image
         run: |
-          docker build \
-            -f infra/Dockerfile \
-            -t $IMAGE:${{ github.sha }} .
+          docker build --no-cache -f infra/Dockerfile -t $IMAGE:${{ github.sha }} .
+
       - name: Login to GHCR
-        if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push
-        if: github.event_name == 'push'
+
+      - name: Push image
         run: |
           docker push $IMAGE:${{ github.sha }}
+
       - name: Trigger stage deploy
-        if: github.event_name == 'pull_request' && github.base_ref == 'dev'
+        if: github.base_ref == 'dev'
         run: |
           curl \
-          -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.INFRA_TOKEN }}" \
-          https://api.github.com/repos/selfdevcomp/infrastructure/dispatches \
-          -d '
-          {
-            "event_type":"deploy-stage",
-            "client_payload":{
-              "image":"${{ env.IMAGE }}:${{ github.sha }}"
-            }
-          }'
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.INFRA_TOKEN }}" \
+            https://api.github.com/repos/selfdevcomp/infrastructure/dispatches \
+            -d '{
+              "event_type":"deploy-stage",
+              "client_payload":{
+                "image":"'"$IMAGE:${{ github.sha }}"'"
+              }
+            }'
