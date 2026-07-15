@@ -39,9 +39,6 @@ const { theme, toggleTheme } = useTheme()
 </script>
 
 <style scoped>
-/* =========================
-   HEADER CONTAINER
-========================= */
 .header {
   position: fixed;
   top: 10px;
@@ -67,9 +64,6 @@ const { theme, toggleTheme } = useTheme()
   border-radius: 10px;
 }
 
-/* =========================
-   LEFT (LOGO)
-========================= */
 .logo-link {
   font-family: 'Montserrat', sans-serif;
   transition: transform 0.25s ease;
@@ -99,9 +93,6 @@ const { theme, toggleTheme } = useTheme()
   color: var(--accent-primary);
 }
 
-/* =========================
-   NAV (DESKTOP)
-========================= */
 .nav {
   display: flex;
   gap: clamp(20px, 4vw, 57px);
@@ -147,9 +138,6 @@ const { theme, toggleTheme } = useTheme()
   width: 100%;
 }
 
-/* =========================
-   RIGHT
-========================= */
 .right {
   display: flex;
   align-items: center;
@@ -180,9 +168,6 @@ const { theme, toggleTheme } = useTheme()
   opacity: 1;
 }
 
-/* =========================
-   THEME BUTTON
-========================= */
 .theme-btn {
   width: 56px;
   height: 56px;
@@ -211,9 +196,6 @@ const { theme, toggleTheme } = useTheme()
     0 0 20px rgba(100, 200, 255, 0.15);
 }
 
-/* =========================
-   MOBILE (MAIN FIX)
-========================= */
 @media (max-width: 768px) {
   .header {
     padding: 0 16px;
