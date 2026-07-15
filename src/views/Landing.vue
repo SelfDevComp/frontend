@@ -6,7 +6,7 @@
   <main class="landing-page">
     <section class="hero">
       <div class="hero-content">
-        <p class="eyebrow">SelfDev</p>
+        <p class="eyebrow">SelfDevchik</p>
         <h1>Track everything that matters.</h1>
         <p class="hero-copy">
           A clean self-development tracker for habits, tasks, and goals. Create your account, verify
@@ -14,9 +14,7 @@
         </p>
 
         <div class="hero-actions">
-            <button @click="casdoorLogin" class="btn btn-primary">
-              Create account
-            </button>
+          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
         </div>
       </div>
 
@@ -108,9 +106,7 @@
         </p>
 
         <div class="hero-actions">
-          <button @click="casdoorLogin" class="btn btn-primary">
-            Create account
-          </button>
+          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
         </div>
       </div>
     </section>
@@ -132,7 +128,6 @@ const casdoorLogin = () => {
 
   window.location.href = url
 }
-
 
 const features = [
   {
