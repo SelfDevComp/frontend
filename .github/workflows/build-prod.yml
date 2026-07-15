@@ -1,9 +1,9 @@
-name: Build Stage Image
+name: Build Prod Image
 
 on:
-  pull_request:
+  push:
     branches:
-      - dev
+      - main
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ env:
   IMAGE: ghcr.io/selfdevcomp/frontend
 
 jobs:
-  build:
+  build-prod:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,8 +34,7 @@ jobs:
         run: |
           docker push $IMAGE:${{ github.sha }}
 
-      - name: Trigger stage deploy
-        if: github.base_ref == 'dev'
+      - name: Trigger prod deploy
         run: |
           curl \
             -X POST \
@@ -43,7 +42,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.INFRA_TOKEN }}" \
             https://api.github.com/repos/selfdevcomp/infrastructure/dispatches \
             -d '{
-              "event_type":"deploy-stage",
+              "event_type":"deploy-prod",
               "client_payload":{
                 "image":"'"$IMAGE:${{ github.sha }}"'"
               }
