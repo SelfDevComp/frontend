@@ -14,9 +14,7 @@
         </p>
 
         <div class="hero-actions">
-            <button @click="casdoorLogin" class="btn btn-primary">
-              Create account
-            </button>
+          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
         </div>
       </div>
 
@@ -108,9 +106,7 @@
         </p>
 
         <div class="hero-actions">
-          <button @click="casdoorLogin" class="btn btn-primary">
-            Create account
-          </button>
+          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
         </div>
       </div>
     </section>
@@ -132,7 +128,6 @@ const casdoorLogin = () => {
 
   window.location.href = url
 }
-
 
 const features = [
   {

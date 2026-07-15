@@ -1,11 +1,11 @@
-version: "3"
+version: '3'
 
 tasks:
   default:
     cmds:
       - task --list
-    silent: true  
-  
+    silent: true
+
   build:
     desc: build frontend side for develope
     cmds:
@@ -14,4 +14,10 @@ tasks:
   dev:
     desc: up only frontend side of project and develope in real time
     cmds:
+      - npm install
       - npm run dev
+
+  lint:
+    desc: formatting project
+    cmds:
+      - npx prettier . --write

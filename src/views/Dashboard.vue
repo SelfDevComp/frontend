@@ -374,7 +374,9 @@ async function fetchHabits(userId: string) {
 }
 
 async function confirmHabit(habitId: string) {
-  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, { method: 'POST' })
+  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
+    method: 'POST',
+  })
   applyHabitDates(habitId, [
     ...new Set([
       ...(habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []),
@@ -385,7 +387,9 @@ async function confirmHabit(habitId: string) {
 }
 
 async function cancelHabit(habitId: string) {
-  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/cancel`, { method: 'POST' })
+  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/cancel`, {
+    method: 'POST',
+  })
   applyHabitDates(
     habitId,
     (habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []).filter(
