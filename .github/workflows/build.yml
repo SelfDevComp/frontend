@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - dev
-      - main
 
 permissions:
   contents: read
@@ -14,7 +13,7 @@ env:
   IMAGE: ghcr.io/selfdevcomp/frontend
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
 
     steps:
