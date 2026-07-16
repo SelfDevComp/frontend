@@ -115,16 +115,14 @@
 
 <script setup lang="ts">
 import LandingHeader from '@/components/Header/LandingHeader.vue'
+import { config } from '@/config/env'
 
 const casdoorLogin = () => {
-  const clientId = '73e7939ad345eee481f3'
-  const redirectUri = 'https://self-dev.tech/auth/callback'
-
   const url =
-    `http://auth.self-dev.tech/login/oauth/authorize` +
-    `?client_id=${clientId}` +
+    `${config.authUrl}/signin/oauth/authorize` +
+    `?client_id=${config.casdoorClientId}` +
     `&response_type=code` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}`
+    `&redirect_uri=${encodeURIComponent(config.redirectUri)}`
 
   window.location.href = url
 }

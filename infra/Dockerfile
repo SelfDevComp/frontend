@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . . 
 
-RUN npm run build
+RUN npm run build -- --mode ${MODE}
 
 # -- RUN STAGE --
 FROM nginx:1.28.0-alpine3.21 AS runner

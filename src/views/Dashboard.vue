@@ -1,7 +1,4 @@
 <template>
-  <div class="main-layout">
-    <WelcomeHeader />
-  </div>
 
   <div class="dashboard-container">
     <div class="dashboard-content">
@@ -165,7 +162,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import WelcomeHeader from '@/components/Header/WelcomeHeader.vue'
 import defaultAvatar from '@/assets/default-avatar.jpg'
 
 interface User {
