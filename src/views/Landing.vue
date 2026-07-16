@@ -186,6 +186,8 @@ const faqs = [
 .content-section {
   padding: 28px 0 0;
   scroll-margin-top: 96px;
+  position: relative;
+  top: -330px;
 }
 
 .section-head {
@@ -401,6 +403,8 @@ const faqs = [
 ========================= */
 .cta-section {
   padding: 44px 0 0;
+  position: relative;
+  bottom: 350px;
 }
 
 .cta-card {
