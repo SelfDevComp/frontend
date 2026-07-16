@@ -3,6 +3,8 @@ FROM node:24-alpine3.22 AS builder
 
 WORKDIR /app
 
+ARG MODE
+
 COPY ./package.json ./package-lock.json* ./
 
 RUN --mount=type=cache,target=/root/.npm npm ci
