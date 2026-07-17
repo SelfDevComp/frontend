@@ -230,6 +230,8 @@ const faqs = [
 .hero {
   min-height: 100vh;
   display: grid;
+  position: relative;
+  isolation: isolate;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 24px;
   align-items: center;
@@ -308,8 +310,6 @@ const faqs = [
 .hero h1 {
   font-size: clamp(36px, 6vw, 64px);
   font-weight: 800;
-  position: relative;
-  isolation: isolate;
   line-height: 1.1;
   color: var(--text-primary);
   text-shadow:
