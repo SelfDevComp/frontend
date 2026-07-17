@@ -303,8 +303,6 @@ const faqs = [
   border: 1px solid var(--surface-border);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transform: translateZ(0);
-  will-change: backdrop-filter;
   box-shadow: var(--shadow-md);
 }
 /* =========================
