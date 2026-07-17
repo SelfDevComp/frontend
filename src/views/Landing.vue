@@ -217,10 +217,14 @@ const faqs = [
 .hero-content,
 .hero-panel {
   background: var(--surface);
+
   border: 1px solid var(--surface-border);
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
   box-shadow: var(--shadow-md);
+
   border-radius: 16px;
 }
 
@@ -231,13 +235,20 @@ const faqs = [
   min-height: 100vh;
   display: grid;
   position: relative;
-  isolation: isolate;
+
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 24px;
+
   align-items: center;
+
   padding: 92px 0 12px;
 }
 
+.hero-content,
+.hero-panel {
+  position: relative;
+  z-index: 1;
+}
 /* =========================
    CONTENT CARD
 ========================= */
@@ -246,14 +257,12 @@ const faqs = [
   flex-direction: column;
   gap: 16px;
   padding: clamp(24px, 3vw, 40px);
-  z-index: 2;
 }
 
 .hero-panel {
   display: grid;
   gap: 16px;
   padding: clamp(18px, 2vw, 24px);
-  z-index: 2;
 }
 
 .stat-card {
