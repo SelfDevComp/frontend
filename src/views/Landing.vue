@@ -396,8 +396,8 @@ const faqs = [
 .btn {
   padding: 12px 24px;
 
-  border-radius: 10px;
-
+  border: none;
+  border-radius: 12px;
   font-weight: 700;
 
   display: inline-flex;
