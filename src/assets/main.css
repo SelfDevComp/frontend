@@ -138,27 +138,6 @@ body::before {
 }
 
 /* =========================
-   GLASS FIX
-========================= */
-
-.hero-content,
-.hero-panel,
-.section-card,
-.feature-card,
-.faq-card,
-.cta-card {
-  background: var(--surface);
-
-  border: 1px solid var(--surface-border);
-
-  backdrop-filter: blur(16px);
-
-  -webkit-backdrop-filter: blur(16px);
-
-  box-shadow: var(--shadow-md);
-}
-
-/* =========================
    TYPOGRAPHY
 ========================= */
 

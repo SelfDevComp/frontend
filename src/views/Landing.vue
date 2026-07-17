@@ -165,14 +165,16 @@ const faqs = [
 /* =========================
    PAGE SHELL
 ========================= */
+
 .landing-page {
   width: 100%;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 
 /* =========================
-   SHARED SECTION STYLES
+   SHARED LAYOUT
 ========================= */
+
 .content-section,
 .cta-section,
 .hero {
@@ -182,94 +184,143 @@ const faqs = [
 }
 
 .content-section {
-  padding: 28px 0 0;
+  padding: 90px 0 0;
   scroll-margin-top: 96px;
-  position: relative;
-  top: -330px;
 }
 
 .section-head {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .eyebrow {
   font-size: 12px;
   font-weight: 700;
+
   letter-spacing: 0.14em;
   text-transform: uppercase;
+
   color: var(--accent-primary);
 }
 
 .section-head h2,
 .cta-card h2 {
   font-size: clamp(28px, 3.4vw, 44px);
+
   line-height: 1.1;
+
   color: var(--text-primary);
 }
 
-.section-card,
-.feature-card,
-.faq-card,
-.cta-card,
-.hero-content,
-.hero-panel {
-  background: var(--surface);
-
-  border: 1px solid var(--surface-border);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow: var(--shadow-md);
-
-  border-radius: 16px;
-}
-
 /* =========================
-   HERO LAYOUT
+   HERO
 ========================= */
 .hero {
-  min-height: 100vh;
-  display: grid;
-  position: relative;
+  min-height: auto;
 
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(280px, 0.8fr);
+
   gap: 24px;
 
   align-items: center;
 
-  padding: 92px 0 12px;
+  padding: 120px 0 60px;
 }
 
 .hero-content,
 .hero-panel {
   position: relative;
+
   z-index: 1;
 }
-/* =========================
-   CONTENT CARD
-========================= */
+
 .hero-content {
   display: flex;
+
   flex-direction: column;
+
   gap: 16px;
+
   padding: clamp(24px, 3vw, 40px);
 }
 
 .hero-panel {
   display: grid;
+
   gap: 16px;
+
   padding: clamp(18px, 2vw, 24px);
 }
 
+/* =========================
+   HERO TITLE
+========================= */
+
+.hero h1 {
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: clamp(36px, 6vw, 64px);
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  color: var(--text-primary);
+
+  text-shadow:
+    0 0 10px rgba(149, 162, 223, 0.18),
+    0 0 25px rgba(59, 130, 246, 0.12);
+}
+
+.hero-copy {
+  max-width: 560px;
+
+  font-size: clamp(15px, 1.4vw, 18px);
+
+  color: var(--text-secondary);
+
+  line-height: 1.6;
+}
+
+/* =========================
+   GLASS FIX
+========================= */
+
+.hero-content,
+.hero-panel,
+.section-card,
+.feature-card,
+.faq-card,
+.cta-card {
+  background: var(--surface);
+  border-radius: 15px;
+  border: 1px solid var(--surface-border);
+
+  backdrop-filter: blur(16px);
+
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   STAT CARDS
+========================= */
+
 .stat-card {
   padding: 18px;
+
   border-radius: 14px;
+
   border: 1px solid var(--border-default);
-  background: rgba(255, 255, 255, 0.03);
+
+  background: var(--surface);
 }
 
 .stat-card-accent {
@@ -278,11 +329,17 @@ const faqs = [
 
 .stat-label {
   display: inline-block;
+
   margin-bottom: 10px;
+
   font-size: 12px;
+
   font-weight: 700;
+
   letter-spacing: 0.12em;
+
   text-transform: uppercase;
+
   color: var(--accent-primary);
 }
 
@@ -291,8 +348,11 @@ const faqs = [
 .tech-card h3,
 .faq-card h3 {
   display: block;
+
   margin-bottom: 8px;
+
   font-size: 18px;
+
   color: var(--text-primary);
 }
 
@@ -301,93 +361,77 @@ const faqs = [
 .feature-card p,
 .tech-card p,
 .faq-card p,
-.cta-card p,
-.hero-copy {
+.cta-card p {
   color: var(--text-secondary);
+
   line-height: 1.6;
 }
 
+/* =========================
+   SECTION CARDS
+========================= */
+
 .section-card-large {
   padding: clamp(20px, 3vw, 30px);
+
   display: grid;
+
   gap: 12px;
 }
 
 /* =========================
-   TITLE (RESPONSIVE FONTS)
+   BUTTONS
 ========================= */
-.hero h1 {
-  font-size: clamp(36px, 6vw, 64px);
-  font-weight: 800;
-  line-height: 1.1;
-  color: var(--text-primary);
-  text-shadow:
-    0 0 10px rgba(149, 162, 223, 0.18),
-    0 0 25px rgba(59, 130, 246, 0.12);
-}
 
-.hero-copy {
-  max-width: 560px;
-  font-size: clamp(15px, 1.4vw, 18px);
-}
-
-/* =========================
-   ACTION BUTTONS
-========================= */
 .hero-actions {
   display: flex;
+
   gap: 14px;
+
   flex-wrap: wrap;
+
   margin-top: 10px;
 }
 
 .btn {
   padding: 12px 24px;
+
   border-radius: 10px;
+
   font-weight: 700;
-  text-decoration: none;
+
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
-  transition: all 0.25s ease;
+
+  transition: 0.25s ease;
+
   font-family: 'Hind Madurai', sans-serif;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+
   color: white;
-  box-shadow:
-    0 10px 30px rgba(59, 130, 246, 0.25),
-    0 0 20px rgba(149, 162, 223, 0.15);
+
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow:
-    0 15px 40px rgba(59, 130, 246, 0.35),
-    0 0 30px rgba(149, 162, 223, 0.25);
-}
-
-.btn-secondary {
-  background: var(--surface);
-  color: var(--text-primary);
-  border: 1px solid var(--surface-border);
-  backdrop-filter: blur(10px);
-}
-
-.btn-secondary:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 25px rgba(149, 162, 223, 0.15);
 }
 
 /* =========================
-   GRID SECTIONS
+   GRIDS
 ========================= */
+
 .feature-grid,
 .faq-grid,
 .tech-grid {
   display: grid;
+
   gap: 16px;
 }
 
@@ -409,44 +453,60 @@ const faqs = [
 /* =========================
    CTA
 ========================= */
+
 .cta-section {
-  padding: 44px 0 0;
-  position: relative;
-  bottom: 350px;
+  padding: 100px 0 40px;
 }
 
 .cta-card {
   padding: clamp(24px, 3vw, 36px);
+
   display: flex;
+
   flex-direction: column;
+
   gap: 14px;
+
   align-items: flex-start;
 }
 
 /* =========================
-   BACKGROUND GLOW (FIXED LAYERS)
+   HERO GLOW
 ========================= */
+
 .hero::before {
   content: '';
+
   position: absolute;
+
   width: 600px;
+
   height: 600px;
+
   background: radial-gradient(circle, rgba(149, 162, 223, 0.12), transparent 60%);
+
   filter: blur(50px);
+
   top: 50%;
+
   left: 50%;
+
   transform: translate(-50%, -50%);
+
   z-index: 0;
+
   pointer-events: none;
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
+
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;
-    padding-top: 84px;
+
+    padding-top: 80px;
   }
 
   .feature-grid,
@@ -459,16 +519,18 @@ const faqs = [
   .content-section,
   .cta-section,
   .hero {
-    width: min(1120px, calc(100% - 24px));
+    width: calc(100% - 24px);
   }
 
   .hero {
     min-height: auto;
-    padding: 96px 0 18px;
+
+    padding: 96px 0 30px;
   }
 
   .hero-actions {
     flex-direction: column;
+
     width: 100%;
   }
 
