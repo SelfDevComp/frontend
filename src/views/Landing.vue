@@ -216,7 +216,7 @@ const faqs = [
 .cta-card,
 .hero-content,
 .hero-panel {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--surface-border);
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px) !important;
