@@ -393,9 +393,8 @@ const faqs = [
 
 .btn {
   padding: 12px 24px;
-
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   font-weight: 700;
 
   display: inline-flex;
@@ -403,10 +402,7 @@ const faqs = [
   align-items: center;
 
   justify-content: center;
-
-  transition: 0.25s ease;
-
-  font-family: 'Hind Madurai', sans-serif;
+  transition: all 0.25s ease;
 }
 
 .btn-primary {
