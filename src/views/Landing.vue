@@ -216,7 +216,7 @@ const faqs = [
 .cta-card,
 .hero-content,
 .hero-panel {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
   border: 1px solid var(--surface-border);
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px) !important;
@@ -308,6 +308,8 @@ const faqs = [
 .hero h1 {
   font-size: clamp(36px, 6vw, 64px);
   font-weight: 800;
+  position: relative;
+  isolation: isolate;
   line-height: 1.1;
   color: var(--text-primary);
   text-shadow:
