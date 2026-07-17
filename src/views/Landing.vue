@@ -333,6 +333,7 @@ const faqs = [
 
 .btn {
   padding: 12px 24px;
+  border: none;
   border-radius: 10px;
   font-weight: 700;
   text-decoration: none;
@@ -340,7 +341,6 @@ const faqs = [
   align-items: center;
   justify-content: center;
   transition: all 0.25s ease;
-  font-family: 'Hind Madurai', sans-serif;
 }
 
 .btn-primary {

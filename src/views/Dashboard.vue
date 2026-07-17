@@ -1,5 +1,4 @@
 <template>
-
   <div class="dashboard-container">
     <div class="dashboard-content">
       <div v-if="loading" class="card-surface" style="padding: 16px 24px">Loading dashboard...</div>
