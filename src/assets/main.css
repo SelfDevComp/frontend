@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Hind+Madurai:wght@400;600;700&display=swap');
 
 /* =========================
-   DESIGN TOKENS (LIGHT)
+   DESIGN TOKENS
 ========================= */
+
 :root {
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -15,17 +16,17 @@
   --info: #64c8ff;
 }
 
+/* =========================
+   LIGHT
+========================= */
+
 html[data-theme='light'] {
   --bg-image: url('/LightWallpaper.jpg');
 
-  --bg-page: rgba(248, 240, 221, 0.2);
-
   --bg-primary: #f5f5f5;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #f0f2f5;
 
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-border: rgba(255, 255, 255, 0.08);
+  --surface: rgba(255, 255, 255, 0.45);
+  --surface-border: rgba(255, 255, 255, 0.55);
 
   --text-primary: #5f677e;
   --text-secondary: rgba(95, 103, 126, 0.7);
@@ -34,23 +35,23 @@ html[data-theme='light'] {
   --accent-primary: #6c7bff;
   --accent-light: #a5aeff;
   --accent-dark: #4d5bff;
-  --accent-secondary: #6366f1;
 
-  --border-subtle: rgba(95, 103, 126, 0.12);
   --border-default: rgba(95, 103, 126, 0.18);
-  --border-strong: rgba(95, 103, 126, 0.28);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.12);
 }
+
+/* =========================
+   DARK
+========================= */
 
 html[data-theme='dark'] {
   --bg-image: url('/DarkWallpaper.jpg');
 
   --bg-primary: #1a1a1a;
-  --bg-secondary: #242424;
-  --bg-tertiary: #2f2f2f;
+
+  --surface: rgba(255,255,255,0.06);
+  --surface-border: rgba(255,255,255,0.12);
 
   --text-primary: #f5f5f5;
   --text-secondary: #d0d0d0;
@@ -59,18 +60,10 @@ html[data-theme='dark'] {
   --accent-primary: #64c8ff;
   --accent-light: #a8e0ff;
   --accent-dark: #3aa8e8;
-  --accent-secondary: #64c8ff;
 
-  --surface: rgba(0, 0, 0, 0.35);
-  --surface-border: rgba(255, 255, 255, 0.08);
-
-  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-default: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.18);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* =========================
@@ -84,36 +77,52 @@ html[data-theme='dark'] {
 }
 
 html,
-body {
+body,
+#app {
   width: 100%;
   min-height: 100%;
 }
 
 /* =========================
-   PAGE BACKGROUND
+   BACKGROUND LAYER
 ========================= */
 
 html {
-  background-image: var(--bg-image);
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: var(--bg-primary);
 }
 
 body {
   min-height: 100vh;
-  font-family: 'Hind Madurai', system-ui, sans-serif;
-  color: var(--text-primary);
-  background: transparent;
 
-  transition:
-    background-image 0.4s ease,
-    color 0.3s ease;
+  font-family: 'Hind Madurai', system-ui, sans-serif;
+
+  color: var(--text-primary);
+
+  background: var(--bg-primary);
+
+  position: relative;
+}
+
+body::before {
+  content: '';
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 0;
+
+  pointer-events: none;
 }
 
 #app {
-  width: 100%;
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   background: transparent;
 }
@@ -135,20 +144,11 @@ h3 {
 
 ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-default);
   border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
 }
 
 /* =========================
@@ -157,11 +157,11 @@ h3 {
 
 ::selection {
   background: var(--accent-primary);
-  color: #fff;
+  color: white;
 }
 
 /* =========================
-   TOASTS
+   TOAST
 ========================= */
 
 .Vue-Toastification__toast {
@@ -169,24 +169,4 @@ h3 {
   font-weight: 600;
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.Vue-Toastification__toast--error {
-  background: var(--error);
-  color: #fff;
-}
-
-.Vue-Toastification__toast--success {
-  background: var(--success);
-  color: #fff;
-}
-
-.Vue-Toastification__toast--warning {
-  background: var(--warning);
-  color: #000;
-}
-
-.Vue-Toastification__toast--info {
-  background: var(--info);
-  color: #fff;
 }
