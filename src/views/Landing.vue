@@ -244,6 +244,7 @@ const faqs = [
   display: flex;
   flex-direction: column;
   gap: 16px;
+  backdrop-filter: blur(150px);
   padding: clamp(24px, 3vw, 40px);
   z-index: 2;
 }
@@ -251,8 +252,10 @@ const faqs = [
 .hero-panel {
   display: grid;
   gap: 16px;
+  backdrop-filter: blur(100px);
   padding: clamp(18px, 2vw, 24px);
   z-index: 2;
+  color: rgb(111, 27, 27) !important;
 }
 
 .stat-card {
