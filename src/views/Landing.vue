@@ -218,8 +218,8 @@ const faqs = [
 .hero-panel {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   box-shadow: var(--shadow-md);
   border-radius: 16px;
 }
