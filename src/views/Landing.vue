@@ -299,16 +299,14 @@ const faqs = [
 .faq-card,
 .cta-card {
   background: var(--surface);
-  border-radius: 15px;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--surface-border);
-
-  backdrop-filter: blur(16px);
-
-  -webkit-backdrop-filter: blur(16px);
-
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
   box-shadow: var(--shadow-md);
 }
-
 /* =========================
    STAT CARDS
 ========================= */

@@ -98,16 +98,12 @@ body {
 
   color: var(--text-primary);
 
-  background: transparent;
-}
+  background: var(--bg-primary);
 
-/*
-  отдельный фон.
-  ВАЖНО:
-  НЕ ставим z-index:-1,
-  иначе в production nginx/chromium
-  может убрать слой из compositing
-*/
+  position: relative;
+
+  isolation: isolate;
+}
 
 body::before {
   content: '';
@@ -124,7 +120,7 @@ body::before {
 
   background-repeat: no-repeat;
 
-  z-index: 0;
+  z-index: -1;
 
   pointer-events: none;
 }
@@ -132,7 +128,7 @@ body::before {
 #app {
   position: relative;
 
-  z-index: 1;
+  min-height: 100vh;
 
   background: transparent;
 }
