@@ -14,7 +14,7 @@
         </p>
 
         <div class="hero-actions">
-          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
+          <button @click="casdoorSignup" class="btn btn-primary">Create account</button>
         </div>
       </div>
 
@@ -106,7 +106,7 @@
         </p>
 
         <div class="hero-actions">
-          <button @click="casdoorLogin" class="btn btn-primary">Create account</button>
+          <button @click="casdoorSignup" class="btn btn-primary">Create account</button>
         </div>
       </div>
     </section>
@@ -117,15 +117,16 @@
 import LandingHeader from '@/components/Header/LandingHeader.vue'
 import { config } from '@/config/env'
 
-const casdoorLogin = () => {
+const casdoorSignup = () => {
   const url =
-    `${config.authUrl}/signin/oauth/authorize` +
+    `${config.authUrl}/signup/oauth/authorize` +
     `?client_id=${config.casdoorClientId}` +
     `&response_type=code` +
     `&redirect_uri=${encodeURIComponent(config.redirectUri)}`
 
   window.location.href = url
 }
+
 
 const features = [
   {
