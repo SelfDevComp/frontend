@@ -162,6 +162,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import defaultAvatar from '@/assets/default-avatar.jpg'
+import { config } from '@/config/env'
 
 interface User {
   user_id: string
@@ -265,8 +266,8 @@ function isHabitDoneToday(habit: Habit) {
   return habit.confirmedDates.map(toIsoDate).includes(today)
 }
 
-async function fetchJson<T>(url: string, options: RequestInit = {}) {
-  const response = await fetch(url, {
+async function fetchJson<T>(path: string, options: RequestInit = {}) {
+  const response = await fetch(`${config.apiUrl}${path}`, {
     credentials: 'include',
     ...options,
     headers: {
@@ -282,19 +283,19 @@ async function fetchJson<T>(url: string, options: RequestInit = {}) {
   return response.json() as Promise<T>
 }
 
-async function fetchUser() {
-  const data = await fetchJson<User>('/api/auth/me')
-  user.value = data
-}
+
+// async function fetchHabitDates(habitId: string) {
+//   const data = await fetchJson<{
+//     dates?: Array<{ date?: string; Date?: string }>
+//     Dates?: Array<{ date?: string; Date?: string }>
+//   }>(`/api/habit/${encodeURIComponent(habitId)}/confirmed`)
+//   return (data.dates || data.Dates || [])
+//     .map((item) => item.date || item.Date || '')
+//     .filter(Boolean)
+// }
 
 async function fetchHabitDates(habitId: string) {
-  const data = await fetchJson<{
-    dates?: Array<{ date?: string; Date?: string }>
-    Dates?: Array<{ date?: string; Date?: string }>
-  }>(`/api/habit/${encodeURIComponent(habitId)}/confirmed`)
-  return (data.dates || data.Dates || [])
-    .map((item) => item.date || item.Date || '')
-    .filter(Boolean)
+  return []
 }
 
 async function refreshHabit(habitId: string) {
@@ -315,11 +316,7 @@ function applyHabitDates(habitId: string, dates: string[]) {
   )
 }
 
-async function fetchHabits(userId: string) {
-  if (!userId) {
-    throw new Error('Missing user id')
-  }
-
+async function fetchHabits() {
   const data = await fetchJson<{
     habits?: Array<{
       habit_id?: string
@@ -341,7 +338,7 @@ async function fetchHabits(userId: string) {
       is_good?: boolean
       IsGood?: boolean
     }>
-  }>(`/api/habit/${encodeURIComponent(userId)}`)
+  }>('/api/habits')
   const nextHabits = await Promise.all(
     (data.habits || data.Habits || []).map(async (habit) => {
       const id = habit.habit_id || habit.HabitId || ''
@@ -368,30 +365,38 @@ async function fetchHabits(userId: string) {
   habits.value = nextHabits
 }
 
+// async function confirmHabit(habitId: string) {
+//   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
+//     method: 'POST',
+//   })
+//   applyHabitDates(habitId, [
+//     ...new Set([
+//       ...(habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []),
+//       toIsoDate(new Date()),
+//     ]),
+//   ])
+//   await refreshHabit(habitId)
+// }
+
 async function confirmHabit(habitId: string) {
-  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
-    method: 'POST',
-  })
-  applyHabitDates(habitId, [
-    ...new Set([
-      ...(habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []),
-      toIsoDate(new Date()),
-    ]),
-  ])
-  await refreshHabit(habitId)
+  console.log('confirm not implemented in backend')
 }
 
+// async function cancelHabit(habitId: string) {
+//   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/cancel`, {
+//     method: 'POST',
+//   })
+//   applyHabitDates(
+//     habitId,
+//     (habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []).filter(
+//       (date) => toIsoDate(date) !== toIsoDate(new Date()),
+//     ),
+//   )
+//   await refreshHabit(habitId)
+// }
+
 async function cancelHabit(habitId: string) {
-  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/cancel`, {
-    method: 'POST',
-  })
-  applyHabitDates(
-    habitId,
-    (habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []).filter(
-      (date) => toIsoDate(date) !== toIsoDate(new Date()),
-    ),
-  )
-  await refreshHabit(habitId)
+  console.log('cancel not implemented in backend')
 }
 
 async function toggleHabit(habit: Habit) {
@@ -418,7 +423,7 @@ async function createHabit() {
 
   showCreateHabitForm.value = false
   newHabit.value = { name: '', description: '', isGood: true }
-  await fetchHabits(user.value.user_id)
+  await fetchHabits()
 }
 
 const perfectDays = computed(() =>
@@ -435,8 +440,7 @@ onMounted(async () => {
   error.value = ''
 
   try {
-    await fetchUser()
-    await fetchHabits(user.value?.user_id || '')
+    await fetchHabits()
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to load dashboard'
   } finally {

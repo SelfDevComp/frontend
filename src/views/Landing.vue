@@ -122,6 +122,7 @@ const casdoorSignup = () => {
     `${config.authUrl}/signup/oauth/authorize` +
     `?client_id=${config.casdoorClientId}` +
     `&response_type=code` +
+    `&scope=${encodeURIComponent('openid profile email')}` +
     `&redirect_uri=${encodeURIComponent(config.redirectUri)}`
 
   window.location.href = url
