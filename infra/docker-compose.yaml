@@ -3,10 +3,10 @@ name: self-dev
 services:
   frontend:
     build:
-      context: .
+      context: ..
+      dockerfile: infra/Dockerfile
       args:
         MODE: ${MODE:-stage}
-    # image: ${BACKEND_IMAGE}
     restart: unless-stopped
     networks:
       - self-dev
@@ -14,7 +14,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`self-dev.test`)"
       - "traefik.http.routers.frontend.entrypoints=web"
-      # - "traefik.http.routers.backend-stage.tls.certresolver=le"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
 
