@@ -23,21 +23,20 @@ jobs:
 
       - name: Build image
         run: |
-          docker compose -f infra/docker-compose.yaml build
-
-      - name: Tag image
-        run: |
-          docker tag frontend $IMAGE:${{ github.sha }}
+            docker build \
+            -f infra/Dockerfile \
+            -t $IMAGE:${{ github.sha }} \
+            .
 
       - name: Login to GHCR
         if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push image
         if: github.event_name == 'push'
         run: |
-          docker push $IMAGE:${{ github.sha }}
+            docker push $IMAGE:${{ github.sha }}
