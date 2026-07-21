@@ -6,10 +6,15 @@ tasks:
       - task --list
     silent: true
 
-  build:
-    desc: build frontend side for develope
+  up:
+    desc: up frontend container
     cmds:
-      - docker build -t self-dev-frontend -f infra/Dockerfile .
+      - MODE=stage docker compose up --build -d
+
+  down:
+    desc: cancel frontend container
+    cmds:
+      - docker compose down
 
   dev:
     desc: up only frontend side of project and develope in real time

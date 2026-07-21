@@ -23,17 +23,32 @@
         <img :src="theme === 'dark' ? '/icons/sun.svg' : '/icons/moon.svg'" />
       </button>
 
-      <RouterLink to="/login" class="login">
-        <span class="login"
-          >Log in<img :src="theme === 'dark' ? '/icons/arrowWhite.svg' : '/icons/arrowDark.svg'"
-        /></span>
-      </RouterLink>
+      <button class="login" @click="casdoorLogin">
+        <span>
+          Log in
+          <img :src="theme === 'dark' ? '/icons/arrowWhite.svg' : '/icons/arrowDark.svg'" />
+        </span>
+      </button>
     </div>
   </header>
 </template>
 
 <script setup>
 import { useTheme } from '@/composables/useTheme'
+import { config } from '@/config/env'
+
+const casdoorLogin = () => {
+  const url =
+    `${config.authUrl}/login/oauth/authorize` +
+    `?client_id=${config.casdoorClientId}` +
+    `&response_type=code` +
+    `&scope=${encodeURIComponent('openid profile email')}` +
+    `&redirect_uri=${encodeURIComponent(config.redirectUri)}`
+
+  window.location.href = url
+}
+
+
 
 const { theme, toggleTheme } = useTheme()
 </script>
@@ -145,17 +160,21 @@ const { theme, toggleTheme } = useTheme()
 }
 
 .login {
-  font-family: 'Hind Madurai', sans-serif;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 
+  font-family: 'Hind Madurai', sans-serif;
   font-size: clamp(16px, 1.2vw, 24px);
   font-weight: 700;
 
   color: var(--text-primary);
-  text-decoration: none;
 
   display: flex;
   align-items: center;
   gap: 6px;
+
+  transition: .25s;
 }
 
 .login-arrow {
