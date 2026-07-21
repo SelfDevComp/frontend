@@ -9,12 +9,12 @@ tasks:
   up:
     desc: up frontend container
     cmds:
-      - MODE=stage docker compose up --build -d
+      - MODE=stage docker compose -f infra/docker-compose.yaml up --build -d
 
   down:
     desc: cancel frontend container
     cmds:
-      - docker compose down
+      - docker compose -f infra/docker-compose.yaml down
 
   dev:
     desc: up only frontend side of project and develope in real time
