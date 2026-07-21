@@ -22,8 +22,4 @@ COPY ./public/config.template.js /usr/share/nginx/html/config.template.js
 
 EXPOSE 80
 
-ENTRYPOINT ["/bin/sh", "-c"]
-
-CMD [
-"envsubst < /usr/share/nginx/html/config.template.js > /usr/share/nginx/html/config.js && nginx -g 'daemon off;'"
-]
+CMD ["sh", "-c", "envsubst < /usr/share/nginx/html/config.template.js > /usr/share/nginx/html/config.js && nginx -g 'daemon off;'"]
