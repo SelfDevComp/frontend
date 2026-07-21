@@ -1,6 +1,6 @@
 export const config = {
-  authUrl: import.meta.env.VITE_AUTH_HOST,
-  apiUrl: import.meta.env.VITE_API_HOST,
-  redirectUri: import.meta.env.VITE_REDIRECT_URI,
-  casdoorClientId: import.meta.env.VITE_CASDOOR_CLIENT_ID,
+  authUrl: window.__CONFIG__.AUTH_HOST,
+  apiUrl: window.__CONFIG__.API_HOST,
+  redirectUri: window.__CONFIG__.REDIRECT_URI,
+  casdoorClientId: window.__CONFIG__.CASDOOR_CLIENT_ID,
 }

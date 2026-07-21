@@ -1,18 +1,16 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_AUTH_HOST: string
-  readonly VITE_API_HOST: string
-  readonly VITE_REDIRECT_URI: string
-  readonly VITE_CASDOOR_CLIENT_ID: string
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
+interface Window {
+  __CONFIG__: {
+    AUTH_HOST: string
+    API_HOST: string
+    REDIRECT_URI: string
+    CASDOOR_CLIENT_ID: string
+  }
 }
 
 declare module '*.vue' {
-  import { DefineComponent } from 'vue'
+  import type { DefineComponent } from 'vue'
 
   const component: DefineComponent<{}, {}, any>
 

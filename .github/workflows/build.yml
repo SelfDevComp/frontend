@@ -14,31 +14,30 @@ env:
   IMAGE: ghcr.io/selfdevcomp/frontend
 
 jobs:
-#   lint:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v4
-
-#       - name: Check code
-#         run: |
-#           task lint
-
   docker:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Build
+      - name: Build image
         run: |
-            MODE=prod docker compose -f infra/docker-compose.yaml build
+          docker compose -f infra/docker-compose.yaml build
 
       - name: Tag image
         run: |
-            docker tag frontend $IMAGE:${{ github.sha }}
+          docker tag frontend $IMAGE:${{ github.sha }}
 
-      - name: Push
+      - name: Login to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
         if: github.event_name == 'push'
         run: |
-            docker push $IMAGE:${{ github.sha }}
+          docker push $IMAGE:${{ github.sha }}
