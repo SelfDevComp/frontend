@@ -1,4 +1,8 @@
 <template>
+  <div class="main-layout">
+    <DashboardHeader />
+  </div>
+
   <div class="dashboard-container">
     <div class="dashboard-content">
       <div v-if="loading" class="card-surface" style="padding: 16px 24px">Loading dashboard...</div>
@@ -119,8 +123,9 @@
                           v-for="day in habit.heatmap"
                           :key="day.key"
                           class="cube"
+                          :data-date="day.key"
                           :data-level="day.level"
-                          @click="day.level === 4 ? cancelHabit(habit.id) : confirmHabit(habit.id)"
+                          :class="{ today: day.key === todayStr }"
                         ></div>
                       </div>
                     </div>
@@ -160,9 +165,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, nextTick } from 'vue'
 import defaultAvatar from '@/assets/default-avatar.jpg'
 import { config } from '@/config/env'
+import DashboardHeader from '@/components/Header/DashboardHeader.vue'
+const todayStr = computed(() => toIsoDate(new Date()))
+const updatingHabits = ref(new Set<string>())
 
 interface User {
   user_id: string
@@ -280,22 +288,21 @@ async function fetchJson<T>(path: string, options: RequestInit = {}) {
     throw new Error(await response.text())
   }
 
-  return response.json() as Promise<T>
+  const text = await response.text()
+
+  return text ? (JSON.parse(text) as T) : ({} as T)
 }
 
 
-// async function fetchHabitDates(habitId: string) {
-//   const data = await fetchJson<{
-//     dates?: Array<{ date?: string; Date?: string }>
-//     Dates?: Array<{ date?: string; Date?: string }>
-//   }>(`/api/habit/${encodeURIComponent(habitId)}/confirmed`)
-//   return (data.dates || data.Dates || [])
-//     .map((item) => item.date || item.Date || '')
-//     .filter(Boolean)
-// }
-
 async function fetchHabitDates(habitId: string) {
-  return []
+  const data = await fetchJson<{
+    Dates?: Array<{
+      HabitId: string
+      Date: string
+    }>
+  }>(`/api/habit/${encodeURIComponent(habitId)}/confirm`)
+
+  return (data.Dates || []).map((item: { HabitId: string; Date: string }) => item.Date)
 }
 
 async function refreshHabit(habitId: string) {
@@ -365,38 +372,28 @@ async function fetchHabits() {
   habits.value = nextHabits
 }
 
-// async function confirmHabit(habitId: string) {
-//   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
-//     method: 'POST',
-//   })
-//   applyHabitDates(habitId, [
-//     ...new Set([
-//       ...(habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []),
-//       toIsoDate(new Date()),
-//     ]),
-//   ])
-//   await refreshHabit(habitId)
-// }
-
 async function confirmHabit(habitId: string) {
-  console.log('confirm not implemented in backend')
+  if (updatingHabits.value.has(habitId)) return
+
+  updatingHabits.value.add(habitId)
+
+  try {
+    await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
+      method: 'POST',
+    })
+
+    await refreshHabit(habitId)
+  } finally {
+    updatingHabits.value.delete(habitId)
+  }
 }
 
-// async function cancelHabit(habitId: string) {
-//   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/cancel`, {
-//     method: 'POST',
-//   })
-//   applyHabitDates(
-//     habitId,
-//     (habits.value.find((habit) => habit.id === habitId)?.confirmedDates || []).filter(
-//       (date) => toIsoDate(date) !== toIsoDate(new Date()),
-//     ),
-//   )
-//   await refreshHabit(habitId)
-// }
-
 async function cancelHabit(habitId: string) {
-  console.log('cancel not implemented in backend')
+  await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
+    method: 'DELETE',
+  })
+
+  await refreshHabit(habitId)
 }
 
 async function toggleHabit(habit: Habit) {
@@ -409,12 +406,9 @@ async function toggleHabit(habit: Habit) {
 }
 
 async function createHabit() {
-  if (!user.value) return
-
   await fetchJson('/api/habit', {
     method: 'POST',
     body: JSON.stringify({
-      user_id: user.value.user_id,
       name: newHabit.value.name,
       description: newHabit.value.description,
       is_good: newHabit.value.isGood,
@@ -461,6 +455,12 @@ onMounted(async () => {
   overflow: hidden;
   padding: 100px 24px 40px;
   box-sizing: border-box;
+}
+
+.cube.today {
+  outline: 0.1px solid var(--accent-primary);
+  outline-offset: 1px;
+  box-shadow: 0 0 2px rgba(59, 130, 246, 0.5);
 }
 
 .dashboard-container::before {

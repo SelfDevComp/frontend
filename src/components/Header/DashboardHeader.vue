@@ -22,21 +22,6 @@
       <button class="theme-btn" @click="toggleTheme">
         <img :src="theme === 'dark' ? '/icons/sun.svg' : '/icons/moon.svg'" />
       </button>
-
-      <a class="login" href="/login"
-        >Log in<svg
-          class="login-arrow"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M9 18l6-6-6-6" /></svg
-      ></a>
     </div>
   </header>
 </template>
