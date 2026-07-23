@@ -78,10 +78,23 @@
                 type="text"
                 placeholder="Description"
               />
-              <label class="habit-checkbox">
-                <input v-model="newHabit.isGood" type="checkbox" />
-                <span>Good habit</span>
-              </label>
+              <input
+                v-model="newHabit.category"
+                class="habit-input"
+                placeholder="Category"
+              />
+
+              <div class="habit-options">
+                <label class="habit-checkbox">
+                  <input v-model="newHabit.isGood" type="checkbox" />
+                  <span>Good habit</span>
+                </label>
+
+                <label class="color-picker">
+                  <span>Color</span>
+                  <input v-model="newHabit.color" type="color" />
+                </label>
+              </div>
               <div class="habit-create-actions">
                 <button class="btn btn-primary btn-sm" type="submit">Save</button>
                 <button class="btn btn-sm" type="button" @click="showCreateHabitForm = false">
@@ -99,7 +112,7 @@
                   v-for="habit in habits"
                   :key="habit.id"
                   class="habit-card card-surface"
-                  :class="habit.color"
+                  :style="{ '--habit-color': habit.color }"
                 >
                   <div class="habit-header">
                     <div class="habit-title-group">
@@ -205,6 +218,8 @@ const showCreateHabitForm = ref(false)
 const newHabit = ref({
   name: '',
   description: '',
+  category: '',
+  color: '#39d353',
   isGood: true,
 })
 
@@ -255,19 +270,7 @@ function buildHeatmap(completedDates: string[]) {
   return days
 }
 
-function detectCategory(name: string, description: string, isGood: boolean) {
-  const text = `${name} ${description}`.toLowerCase()
-  if (/(english|japanese|spanish|language|learn|study)/.test(text)) return 'languages'
-  if (/(code|coding|python|js|ts|program|dev)/.test(text)) return 'coding'
-  if (/(gym|run|train|sport|health|sleep|water|meditat)/.test(text)) return 'health'
-  return isGood ? 'health' : 'coding'
-}
 
-function habitColor(category: string) {
-  if (category === 'coding') return 'purple'
-  if (category === 'languages') return 'blue'
-  return 'green'
-}
 
 function isHabitDoneToday(habit: Habit) {
   const today = toIsoDate(new Date())
@@ -332,6 +335,10 @@ async function fetchHabits() {
       Name?: string
       description?: string
       Description?: string
+      category?: string
+      Category?: string
+      color?: string
+      Color?: string
       is_good?: boolean
       IsGood?: boolean
     }>
@@ -342,6 +349,10 @@ async function fetchHabits() {
       Name?: string
       description?: string
       Description?: string
+      category?: string
+      Category?: string
+      color?: string
+      Color?: string
       is_good?: boolean
       IsGood?: boolean
     }>
@@ -352,7 +363,8 @@ async function fetchHabits() {
       const name = habit.name || habit.Name || ''
       const description = habit.description || habit.Description || ''
       const isGood = habit.is_good ?? habit.IsGood ?? false
-      const category = detectCategory(name, description, isGood)
+      const category = habit.category || habit.Category || ''
+      const color = habit.color || habit.Color || '#39d353'
       const confirmedDates = id ? await fetchHabitDates(id) : []
 
       return {
@@ -360,7 +372,7 @@ async function fetchHabits() {
         name,
         description,
         isGood,
-        color: habitColor(category),
+        color,
         category,
         confirmedDates,
         confirmedCount: confirmedDates.length,
@@ -409,14 +421,22 @@ async function createHabit() {
   await fetchJson('/api/habit', {
     method: 'POST',
     body: JSON.stringify({
-      name: newHabit.value.name,
-      description: newHabit.value.description,
-      is_good: newHabit.value.isGood,
+    name: newHabit.value.name,
+    description: newHabit.value.description,
+    category: newHabit.value.category,
+    color: newHabit.value.color,
+    is_good: newHabit.value.isGood,
     }),
   })
 
   showCreateHabitForm.value = false
-  newHabit.value = { name: '', description: '', isGood: true }
+  newHabit.value = {
+    name: '',
+    description: '',
+    category: '',
+    color: '#39d353',
+    isGood: true,
+  }
   await fetchHabits()
 }
 
@@ -563,6 +583,45 @@ onMounted(async () => {
   height: 12px;
 }
 
+.habit-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.color-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.color-picker input[type='color'] {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background: transparent;
+}
+
+.color-picker input[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker input[type='color']::-webkit-color-swatch {
+  border: 2px solid var(--border-default);
+  border-radius: 50%;
+}
+
+.color-picker input[type='color']::-moz-color-swatch {
+  border: 2px solid var(--border-default);
+  border-radius: 50%;
+}
+
 .xp-bar-bg {
   position: absolute;
   width: 100%;
@@ -652,6 +711,9 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 14px;
+
+  background: rgba(18, 24, 38, 0.96);
+  backdrop-filter: blur(24px);
 }
 
 .habit-create-form h3 {
@@ -896,44 +958,24 @@ onMounted(async () => {
 }
 
 /* Цвета хитмапа */
-.green [data-level='1'] {
-  background: #0e4429;
-}
-.green [data-level='2'] {
-  background: #006d32;
-}
-.green [data-level='3'] {
-  background: #26a641;
-}
-.green [data-level='4'] {
-  background: #39d353;
+.cube[data-level='0'] {
+  background: var(--border-default);
 }
 
-.blue [data-level='1'] {
-  background: rgba(59, 130, 246, 0.25);
-}
-.blue [data-level='2'] {
-  background: rgba(59, 130, 246, 0.5);
-}
-.blue [data-level='3'] {
-  background: var(--accent-primary);
-  opacity: 0.8;
-}
-.blue [data-level='4'] {
-  background: var(--accent-primary);
+.cube[data-level='1'] {
+  background: color-mix(in srgb, var(--habit-color) 25%, transparent);
 }
 
-.purple [data-level='1'] {
-  background: #3d1a78;
+.cube[data-level='2'] {
+  background: color-mix(in srgb, var(--habit-color) 50%, transparent);
 }
-.purple [data-level='2'] {
-  background: #6e40c9;
+
+.cube[data-level='3'] {
+  background: color-mix(in srgb, var(--habit-color) 75%, transparent);
 }
-.purple [data-level='3'] {
-  background: #9b72ff;
-}
-.purple [data-level='4'] {
-  background: #d2a8ff;
+
+.cube[data-level='4'] {
+  background: var(--habit-color);
 }
 
 .heatmap-legend {
