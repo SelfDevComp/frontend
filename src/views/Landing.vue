@@ -128,7 +128,6 @@ const casdoorSignup = () => {
   window.location.href = url
 }
 
-
 const features = [
   {
     title: 'Habit, task, and goal tracking',

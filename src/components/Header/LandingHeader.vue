@@ -48,8 +48,6 @@ const casdoorLogin = () => {
   window.location.href = url
 }
 
-
-
 const { theme, toggleTheme } = useTheme()
 </script>
 
@@ -174,7 +172,7 @@ const { theme, toggleTheme } = useTheme()
   align-items: center;
   gap: 6px;
 
-  transition: .25s;
+  transition: 0.25s;
 }
 
 .login-arrow {
