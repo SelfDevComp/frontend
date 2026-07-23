@@ -78,11 +78,7 @@
                 type="text"
                 placeholder="Description"
               />
-              <input
-                v-model="newHabit.category"
-                class="habit-input"
-                placeholder="Category"
-              />
+              <input v-model="newHabit.category" class="habit-input" placeholder="Category" />
 
               <div class="habit-options">
                 <label class="habit-checkbox">
@@ -270,8 +266,6 @@ function buildHeatmap(completedDates: string[]) {
   return days
 }
 
-
-
 function isHabitDoneToday(habit: Habit) {
   const today = toIsoDate(new Date())
   return habit.confirmedDates.map(toIsoDate).includes(today)
@@ -295,7 +289,6 @@ async function fetchJson<T>(path: string, options: RequestInit = {}) {
 
   return text ? (JSON.parse(text) as T) : ({} as T)
 }
-
 
 async function fetchHabitDates(habitId: string) {
   const data = await fetchJson<{
@@ -421,11 +414,11 @@ async function createHabit() {
   await fetchJson('/api/habit', {
     method: 'POST',
     body: JSON.stringify({
-    name: newHabit.value.name,
-    description: newHabit.value.description,
-    category: newHabit.value.category,
-    color: newHabit.value.color,
-    is_good: newHabit.value.isGood,
+      name: newHabit.value.name,
+      description: newHabit.value.description,
+      category: newHabit.value.category,
+      color: newHabit.value.color,
+      is_good: newHabit.value.isGood,
     }),
   })
 

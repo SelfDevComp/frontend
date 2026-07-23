@@ -50,8 +50,8 @@ html[data-theme='dark'] {
 
   --bg-primary: #1a1a1a;
 
-  --surface: rgba(255,255,255,0.06);
-  --surface-border: rgba(255,255,255,0.12);
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-border: rgba(255, 255, 255, 0.12);
 
   --text-primary: #f5f5f5;
   --text-secondary: #d0d0d0;
