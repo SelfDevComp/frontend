@@ -74,8 +74,8 @@
             class="habit-modal-overlay"
             @click.self="showCreateHabitForm = false"
           >
-            <form class="habit-create-form card-surface" @submit.prevent="createHabit">
-              <h3>Create Habit</h3>
+            <form class="habit-create-form card-surface" @submit.prevent="editingHabitId ? updateHabit() : createHabit()">
+              <h3> {{ editingHabitId ? 'Update Habit' : 'Create Habit' }} </h3>
               <input
                 v-model="newHabit.name"
                 class="habit-input"
@@ -121,7 +121,15 @@
                 </label>
               </div>
               <div class="habit-create-actions">
-                <button class="btn btn-primary btn-sm" type="submit">Save</button>
+                <button
+                  v-if="editingHabitId"
+                  class="btn btn-danger btn-sm"
+                  type="button"
+                  @click="deleteHabit"
+                >
+                  Delete
+                </button>
+                <button class="btn btn-primary btn-sm" type="submit">{{ editingHabitId ? 'Update' : 'Save' }}</button>
                 <button class="btn btn-sm" type="button" @click="showCreateHabitForm = false">
                   Cancel
                 </button>
@@ -130,6 +138,35 @@
           </div>
 
 
+          <div
+            v-if="showDeleteModal"
+            class="habit-modal-overlay"
+            @click.self="showDeleteModal = false"
+          >
+            <div class="delete-modal card-surface">
+              <h3>Delete "{{ habitToDelete?.name }}"?</h3>
+
+              <p>
+                This action cannot be undone.
+              </p>
+
+              <div class="habit-create-actions">
+                <button
+                  class="btn btn-danger btn-sm"
+                  @click="deleteHabit"
+                >
+                  Delete
+                </button>
+
+                <button
+                  class="btn btn-sm"
+                  @click="showDeleteModal = false"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
 
           <!-- 🔥 Новое "окно видимости" с эффектом плавного затухания по краям -->
           <div class="habits-fade-viewport">
@@ -143,8 +180,31 @@
                 >
                   <div class="habit-header">
                     <div class="habit-title-group">
-                      <h2>{{ habit.name }}</h2>
-                      <span class="habit-status">{{ habit.confirmedCount }}/365 cleared</span>
+                      <div class="habit-title-row">
+
+                        <h2>{{ habit.name }}</h2>
+
+                        <button
+                          class="icon-btn"
+                          title="Edit"
+                          @click="openEditHabit(habit)"
+                        >
+                          ✎
+                        </button>
+
+                        <button
+                          class="icon-btn delete"
+                          title="Delete"
+                          @click="openDeleteModal(habit)"
+                        >
+                          🗑
+                        </button>
+
+                      </div>
+
+                      <span class="habit-status">
+                        {{ habit.confirmedCount }}/365 cleared
+                      </span>
                     </div>
                     <button class="btn btn-primary btn-sm" @click="toggleHabit(habit)">
                       {{ isHabitDoneToday(habit) ? 'Cancel' : 'Done' }}
@@ -248,6 +308,31 @@ const newHabit = ref({
   color: '#39d353',
   isGood: true,
 })
+
+const editingHabitId = ref<string | null>(null)
+const showDeleteModal = ref(false)
+const habitToDelete = ref<Habit | null>(null)
+
+function openDeleteModal(habit: Habit) {
+  habitToDelete.value = habit
+  showDeleteModal.value = true
+}
+
+function openEditHabit(habit: Habit) {
+  editingHabitId.value = habit.id
+
+  newHabit.value = {
+    name: habit.name,
+    description: habit.description,
+    category: habit.category,
+    color: habit.color,
+    isGood: habit.isGood,
+  }
+
+  newCategory.value = ''
+  showCreateHabitForm.value = true
+}
+
 
 const categories = computed(() => [
   'all',
@@ -440,6 +525,39 @@ async function confirmHabit(habitId: string) {
   }
 }
 
+function closeHabitForm() {
+  showCreateHabitForm.value = false
+  editingHabitId.value = null
+
+  newHabit.value = {
+    name: '',
+    description: '',
+    category: '',
+    color: '#39d353',
+    isGood: true,
+  }
+
+  newCategory.value = ''
+}
+
+async function deleteHabit() {
+  if (!habitToDelete.value) return
+
+  await fetchJson(
+    `/api/habit/${encodeURIComponent(habitToDelete.value.id)}`,
+    {
+      method: 'DELETE',
+    }
+  )
+
+  habits.value = habits.value.filter(
+    h => h.id !== habitToDelete.value?.id
+  )
+
+  showDeleteModal.value = false
+  habitToDelete.value = null
+}
+
 async function cancelHabit(habitId: string) {
   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
     method: 'DELETE',
@@ -483,9 +601,45 @@ async function createHabit() {
   }
 
   newCategory.value = ''
+  editingHabitId.value = null
 
   await fetchHabits()
 }
+
+async function updateHabit() {
+  if (!editingHabitId.value) return
+
+  await fetchJson(`/api/habit/${editingHabitId.value}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      name: newHabit.value.name,
+      description: newHabit.value.description,
+      category:
+        newHabit.value.category === 'New'
+          ? newCategory.value.trim()
+          : newHabit.value.category,
+      color: newHabit.value.color,
+      is_good: newHabit.value.isGood,
+    }),
+  })
+
+  showCreateHabitForm.value = false
+  editingHabitId.value = null
+
+  newHabit.value = {
+    name: '',
+    description: '',
+    category: '',
+    color: '#39d353',
+    isGood: true,
+  }
+
+  newCategory.value = ''
+
+  // сразу обновляем список
+  await fetchHabits()
+}
+
 
 const perfectDays = computed(() =>
   habits.value.reduce((sum, habit) => sum + habit.confirmedCount, 0),
@@ -554,6 +708,72 @@ onMounted(async () => {
   flex-direction: column;
   gap: 24px;
   height: calc(100vh - 150px);
+}
+
+.habit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: .2s;
+}
+
+
+.icon-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+
+.icon-btn.delete:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+
+.delete-modal {
+  width: min(100%, 380px);
+  padding: 24px;
+}
+
+
+.delete-modal h3 {
+  margin:0 0 12px;
+}
+
+
+.delete-modal p {
+  color: var(--text-secondary);
+  margin-bottom:20px;
+}
+
+
+.btn-danger {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #b91c1c
+  );
+
+  color:white;
 }
 
 .card-surface {
@@ -971,6 +1191,44 @@ onMounted(async () => {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
+}
+
+.habit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+
+  color: var(--text-secondary);
+  transition: .2s;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--accent-primary);
 }
 
 .habit-status {
