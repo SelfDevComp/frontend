@@ -74,8 +74,11 @@
             class="habit-modal-overlay"
             @click.self="showCreateHabitForm = false"
           >
-            <form class="habit-create-form card-surface" @submit.prevent="createHabit">
-              <h3>Create Habit</h3>
+            <form
+              class="habit-create-form card-surface"
+              @submit.prevent="editingHabitId ? updateHabit() : createHabit()"
+            >
+              <h3>{{ editingHabitId ? 'Update Habit' : 'Create Habit' }}</h3>
               <input
                 v-model="newHabit.name"
                 class="habit-input"
@@ -93,7 +96,7 @@
                 <option disabled value="">Choose category</option>
 
                 <option
-                  v-for="category in categories.filter(c => c !== 'all')"
+                  v-for="category in categories.filter((c) => c !== 'all')"
                   :key="category"
                   :value="category"
                 >
@@ -121,7 +124,17 @@
                 </label>
               </div>
               <div class="habit-create-actions">
-                <button class="btn btn-primary btn-sm" type="submit">Save</button>
+                <button
+                  v-if="editingHabitId"
+                  class="btn btn-danger btn-sm"
+                  type="button"
+                  @click="deleteHabit"
+                >
+                  Delete
+                </button>
+                <button class="btn btn-primary btn-sm" type="submit">
+                  {{ editingHabitId ? 'Update' : 'Save' }}
+                </button>
                 <button class="btn btn-sm" type="button" @click="showCreateHabitForm = false">
                   Cancel
                 </button>
@@ -129,7 +142,23 @@
             </form>
           </div>
 
+          <div
+            v-if="showDeleteModal"
+            class="habit-modal-overlay"
+            @click.self="showDeleteModal = false"
+          >
+            <div class="delete-modal card-surface">
+              <h3>Delete "{{ habitToDelete?.name }}"?</h3>
 
+              <p>This action cannot be undone.</p>
+
+              <div class="habit-create-actions">
+                <button class="btn btn-danger btn-sm" @click="deleteHabit">Delete</button>
+
+                <button class="btn btn-sm" @click="showDeleteModal = false">Cancel</button>
+              </div>
+            </div>
+          </div>
 
           <!-- 🔥 Новое "окно видимости" с эффектом плавного затухания по краям -->
           <div class="habits-fade-viewport">
@@ -143,8 +172,23 @@
                 >
                   <div class="habit-header">
                     <div class="habit-title-group">
-                      <h2>{{ habit.name }}</h2>
-                      <span class="habit-status">{{ habit.confirmedCount }}/365 cleared</span>
+                      <div class="habit-title-row">
+                        <h2>{{ habit.name }}</h2>
+
+                        <button class="icon-btn" title="Edit" @click="openEditHabit(habit)">
+                          ✎
+                        </button>
+
+                        <button
+                          class="icon-btn delete"
+                          title="Delete"
+                          @click="openDeleteModal(habit)"
+                        >
+                          🗑
+                        </button>
+                      </div>
+
+                      <span class="habit-status"> {{ habit.confirmedCount }}/365 cleared </span>
                     </div>
                     <button class="btn btn-primary btn-sm" @click="toggleHabit(habit)">
                       {{ isHabitDoneToday(habit) ? 'Cancel' : 'Done' }}
@@ -249,21 +293,39 @@ const newHabit = ref({
   isGood: true,
 })
 
+const editingHabitId = ref<string | null>(null)
+const showDeleteModal = ref(false)
+const habitToDelete = ref<Habit | null>(null)
+
+function openDeleteModal(habit: Habit) {
+  habitToDelete.value = habit
+  showDeleteModal.value = true
+}
+
+function openEditHabit(habit: Habit) {
+  editingHabitId.value = habit.id
+
+  newHabit.value = {
+    name: habit.name,
+    description: habit.description,
+    category: habit.category,
+    color: habit.color,
+    isGood: habit.isGood,
+  }
+
+  newCategory.value = ''
+  showCreateHabitForm.value = true
+}
+
 const categories = computed(() => [
   'all',
-  ...new Set(
-    habits.value
-      .map(h => h.category)
-      .filter(Boolean)
-  )
+  ...new Set(habits.value.map((h) => h.category).filter(Boolean)),
 ])
 
 const filteredHabits = computed(() => {
   if (currentCategory.value === 'all') return habits.value
 
-  return habits.value.filter(
-    h => h.category === currentCategory.value
-  )
+  return habits.value.filter((h) => h.category === currentCategory.value)
 })
 
 const dayMs = 24 * 60 * 60 * 1000
@@ -440,6 +502,34 @@ async function confirmHabit(habitId: string) {
   }
 }
 
+function closeHabitForm() {
+  showCreateHabitForm.value = false
+  editingHabitId.value = null
+
+  newHabit.value = {
+    name: '',
+    description: '',
+    category: '',
+    color: '#39d353',
+    isGood: true,
+  }
+
+  newCategory.value = ''
+}
+
+async function deleteHabit() {
+  if (!habitToDelete.value) return
+
+  await fetchJson(`/api/habit/${encodeURIComponent(habitToDelete.value.id)}`, {
+    method: 'DELETE',
+  })
+
+  habits.value = habits.value.filter((h) => h.id !== habitToDelete.value?.id)
+
+  showDeleteModal.value = false
+  habitToDelete.value = null
+}
+
 async function cancelHabit(habitId: string) {
   await fetchJson(`/api/habit/${encodeURIComponent(habitId)}/confirm`, {
     method: 'DELETE',
@@ -464,9 +554,7 @@ async function createHabit() {
       name: newHabit.value.name,
       description: newHabit.value.description,
       category:
-        newHabit.value.category === 'New'
-          ? newCategory.value.trim()
-          : newHabit.value.category,
+        newHabit.value.category === 'New' ? newCategory.value.trim() : newHabit.value.category,
       color: newHabit.value.color,
       is_good: newHabit.value.isGood,
     }),
@@ -483,7 +571,40 @@ async function createHabit() {
   }
 
   newCategory.value = ''
+  editingHabitId.value = null
 
+  await fetchHabits()
+}
+
+async function updateHabit() {
+  if (!editingHabitId.value) return
+
+  await fetchJson(`/api/habit/${editingHabitId.value}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      name: newHabit.value.name,
+      description: newHabit.value.description,
+      category:
+        newHabit.value.category === 'New' ? newCategory.value.trim() : newHabit.value.category,
+      color: newHabit.value.color,
+      is_good: newHabit.value.isGood,
+    }),
+  })
+
+  showCreateHabitForm.value = false
+  editingHabitId.value = null
+
+  newHabit.value = {
+    name: '',
+    description: '',
+    category: '',
+    color: '#39d353',
+    isGood: true,
+  }
+
+  newCategory.value = ''
+
+  // сразу обновляем список
   await fetchHabits()
 }
 
@@ -554,6 +675,61 @@ onMounted(async () => {
   flex-direction: column;
   gap: 24px;
   height: calc(100vh - 150px);
+}
+
+.habit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+.icon-btn.delete:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.delete-modal {
+  width: min(100%, 380px);
+  padding: 24px;
+}
+
+.delete-modal h3 {
+  margin: 0 0 12px;
+}
+
+.delete-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+
+  color: white;
 }
 
 .card-surface {
@@ -807,7 +983,7 @@ onMounted(async () => {
   color: var(--text-primary);
   font-size: 14px;
   font-family: 'Evolventa', sans-serif;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .habit-create-form select {
@@ -832,7 +1008,7 @@ onMounted(async () => {
 .habit-input:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .habit-create-form select option {
@@ -878,7 +1054,6 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   /* Мягкая CSS-маска. Края плавно растворяются в прозрачность на 24px сверху и снизу */
-
 }
 
 .habits-scroll-window {
@@ -944,7 +1119,7 @@ onMounted(async () => {
    HABIT CARD & HEATMAP (365 ДНЕЙ)
 ========================================= */
 .habit-card {
-  background: rgba(255,255,255,.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
   padding: 20px;
   position: relative;
   transition:
@@ -971,6 +1146,44 @@ onMounted(async () => {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
+}
+
+.habit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+
+  color: var(--text-secondary);
+  transition: 0.2s;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent-primary);
 }
 
 .habit-status {
