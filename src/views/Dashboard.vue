@@ -49,6 +49,17 @@
         <!-- ЛЕВАЯ КОЛОНКА: ПРИВЫЧКИ С НАВИГАЦИЕЙ И АНИМАЦИЕЙ -->
         <section class="habits-container">
           <div class="habits-toolbar card-surface">
+            <div class="categories-nav">
+              <button
+                v-for="category in categories"
+                :key="category"
+                class="nav-tab"
+                :class="{ active: currentCategory === category }"
+                @click="currentCategory = category"
+              >
+                {{ category }}
+              </button>
+            </div>
             <button
               class="btn btn-primary btn-sm"
               type="button"
@@ -118,17 +129,7 @@
             </form>
           </div>
 
-          <div class="categories-nav">
-            <button
-              v-for="category in categories"
-              :key="category"
-              class="nav-tab"
-              :class="{ active: currentCategory === category }"
-              @click="currentCategory = category"
-            >
-              {{ category }}
-            </button>
-          </div>
+
 
           <!-- 🔥 Новое "окно видимости" с эффектом плавного затухания по краям -->
           <div class="habits-fade-viewport">
@@ -734,7 +735,9 @@ onMounted(async () => {
 
 .habits-toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   padding: 12px 16px;
 }
 
@@ -840,12 +843,8 @@ onMounted(async () => {
 .categories-nav {
   display: flex;
   gap: 8px;
-  padding: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  align-self: flex-start;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 .nav-tab {
