@@ -78,7 +78,25 @@
                 type="text"
                 placeholder="Description"
               />
-              <input v-model="newHabit.category" class="habit-input" placeholder="Category" />
+              <select v-model="newHabit.category" class="habit-input">
+                <option disabled value="">Choose category</option>
+
+                <option
+                  v-for="category in categories.filter(c => c !== 'all')"
+                  :key="category"
+                  :value="category"
+                >
+                  {{ category }}
+                </option>
+
+                <option value="New">+ New category</option>
+              </select>
+              <input
+                v-if="newHabit.category === 'New'"
+                v-model="newCategory"
+                class="habit-input"
+                placeholder="New category"
+              />
 
               <div class="habit-options">
                 <label class="habit-checkbox">
@@ -100,12 +118,24 @@
             </form>
           </div>
 
+          <div class="categories-nav">
+            <button
+              v-for="category in categories"
+              :key="category"
+              class="nav-tab"
+              :class="{ active: currentCategory === category }"
+              @click="currentCategory = category"
+            >
+              {{ category }}
+            </button>
+          </div>
+
           <!-- 🔥 Новое "окно видимости" с эффектом плавного затухания по краям -->
           <div class="habits-fade-viewport">
             <div class="habits-scroll-window">
               <TransitionGroup name="habit-fade" tag="div" class="habits-wrapper-layout">
                 <article
-                  v-for="habit in habits"
+                  v-for="habit in filteredHabits"
                   :key="habit.id"
                   class="habit-card card-surface"
                   :style="{ '--habit-color': habit.color }"
@@ -141,7 +171,6 @@
                   </div>
 
                   <div class="heatmap-legend">
-                    <span>Less</span>
                     <div class="l-cubes">
                       <div class="cube" data-level="0"></div>
                       <div class="cube" data-level="1"></div>
@@ -149,7 +178,6 @@
                       <div class="cube" data-level="3"></div>
                       <div class="cube" data-level="4"></div>
                     </div>
-                    <span>More</span>
                   </div>
                 </article>
               </TransitionGroup>
@@ -206,6 +234,7 @@ interface Habit {
 }
 
 const currentCategory = ref('all')
+const newCategory = ref('')
 const user = ref<User | null>(null)
 const habits = ref<Habit[]>([])
 const loading = ref(true)
@@ -217,6 +246,23 @@ const newHabit = ref({
   category: '',
   color: '#39d353',
   isGood: true,
+})
+
+const categories = computed(() => [
+  'all',
+  ...new Set(
+    habits.value
+      .map(h => h.category)
+      .filter(Boolean)
+  )
+])
+
+const filteredHabits = computed(() => {
+  if (currentCategory.value === 'all') return habits.value
+
+  return habits.value.filter(
+    h => h.category === currentCategory.value
+  )
 })
 
 const dayMs = 24 * 60 * 60 * 1000
@@ -416,13 +462,17 @@ async function createHabit() {
     body: JSON.stringify({
       name: newHabit.value.name,
       description: newHabit.value.description,
-      category: newHabit.value.category,
+      category:
+        newHabit.value.category === 'New'
+          ? newCategory.value.trim()
+          : newHabit.value.category,
       color: newHabit.value.color,
       is_good: newHabit.value.isGood,
     }),
   })
 
   showCreateHabitForm.value = false
+
   newHabit.value = {
     name: '',
     description: '',
@@ -430,6 +480,9 @@ async function createHabit() {
     color: '#39d353',
     isGood: true,
   }
+
+  newCategory.value = ''
+
   await fetchHabits()
 }
 
@@ -737,6 +790,51 @@ onMounted(async () => {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.habit-input[type='text'],
+.habit-input,
+.habit-create-form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'Evolventa', sans-serif;
+  transition: .2s;
+}
+
+.habit-create-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  padding-right: 40px;
+}
+
+.habit-create-form select:focus,
+.habit-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+
+.habit-create-form select option {
+  background: #1b2230;
+  color: var(--text-primary);
 }
 
 .categories-nav {
