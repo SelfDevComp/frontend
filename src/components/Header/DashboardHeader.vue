@@ -9,14 +9,6 @@
       </RouterLink>
     </div>
 
-    <!-- CENTER -->
-    <nav class="nav">
-      <a href="#">About</a>
-      <a href="#">Features</a>
-      <a href="#">Tech</a>
-      <a href="#">Faq</a>
-    </nav>
-
     <!-- RIGHT -->
     <div class="right">
       <button class="theme-btn" @click="toggleTheme">
