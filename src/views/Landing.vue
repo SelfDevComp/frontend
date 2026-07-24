@@ -302,8 +302,8 @@ const faqs = [
   background: var(--surface);
   border-radius: var(--radius-xl);
   border: 1px solid var(--surface-border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
   box-shadow: var(--shadow-md);
 }
 /* =========================

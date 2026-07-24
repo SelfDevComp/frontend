@@ -505,8 +505,8 @@ onMounted(async () => {
 .card-surface {
   background: var(--surface);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
   border-radius: 16px;
   box-shadow: var(--shadow-md);
   color: var(--text-primary);
@@ -781,20 +781,7 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   /* Мягкая CSS-маска. Края плавно растворяются в прозрачность на 24px сверху и снизу */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 24px,
-    black calc(100% - 24px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 24px,
-    black calc(100% - 24px),
-    transparent 100%
-  );
+
 }
 
 .habits-scroll-window {
@@ -809,6 +796,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
   position: relative;
 }
 
@@ -858,11 +847,13 @@ onMounted(async () => {
    HABIT CARD & HEATMAP (365 ДНЕЙ)
 ========================================= */
 .habit-card {
+  background: rgba(255,255,255,.06) !important;
   padding: 20px;
   position: relative;
   transition:
     border-color 0.25s ease,
     box-shadow 0.25s ease;
+
   width: 100%;
   box-sizing: border-box;
 }
