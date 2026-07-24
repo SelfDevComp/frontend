@@ -74,8 +74,11 @@
             class="habit-modal-overlay"
             @click.self="showCreateHabitForm = false"
           >
-            <form class="habit-create-form card-surface" @submit.prevent="editingHabitId ? updateHabit() : createHabit()">
-              <h3> {{ editingHabitId ? 'Update Habit' : 'Create Habit' }} </h3>
+            <form
+              class="habit-create-form card-surface"
+              @submit.prevent="editingHabitId ? updateHabit() : createHabit()"
+            >
+              <h3>{{ editingHabitId ? 'Update Habit' : 'Create Habit' }}</h3>
               <input
                 v-model="newHabit.name"
                 class="habit-input"
@@ -93,7 +96,7 @@
                 <option disabled value="">Choose category</option>
 
                 <option
-                  v-for="category in categories.filter(c => c !== 'all')"
+                  v-for="category in categories.filter((c) => c !== 'all')"
                   :key="category"
                   :value="category"
                 >
@@ -129,14 +132,15 @@
                 >
                   Delete
                 </button>
-                <button class="btn btn-primary btn-sm" type="submit">{{ editingHabitId ? 'Update' : 'Save' }}</button>
+                <button class="btn btn-primary btn-sm" type="submit">
+                  {{ editingHabitId ? 'Update' : 'Save' }}
+                </button>
                 <button class="btn btn-sm" type="button" @click="showCreateHabitForm = false">
                   Cancel
                 </button>
               </div>
             </form>
           </div>
-
 
           <div
             v-if="showDeleteModal"
@@ -146,24 +150,12 @@
             <div class="delete-modal card-surface">
               <h3>Delete "{{ habitToDelete?.name }}"?</h3>
 
-              <p>
-                This action cannot be undone.
-              </p>
+              <p>This action cannot be undone.</p>
 
               <div class="habit-create-actions">
-                <button
-                  class="btn btn-danger btn-sm"
-                  @click="deleteHabit"
-                >
-                  Delete
-                </button>
+                <button class="btn btn-danger btn-sm" @click="deleteHabit">Delete</button>
 
-                <button
-                  class="btn btn-sm"
-                  @click="showDeleteModal = false"
-                >
-                  Cancel
-                </button>
+                <button class="btn btn-sm" @click="showDeleteModal = false">Cancel</button>
               </div>
             </div>
           </div>
@@ -181,14 +173,9 @@
                   <div class="habit-header">
                     <div class="habit-title-group">
                       <div class="habit-title-row">
-
                         <h2>{{ habit.name }}</h2>
 
-                        <button
-                          class="icon-btn"
-                          title="Edit"
-                          @click="openEditHabit(habit)"
-                        >
+                        <button class="icon-btn" title="Edit" @click="openEditHabit(habit)">
                           ✎
                         </button>
 
@@ -199,12 +186,9 @@
                         >
                           🗑
                         </button>
-
                       </div>
 
-                      <span class="habit-status">
-                        {{ habit.confirmedCount }}/365 cleared
-                      </span>
+                      <span class="habit-status"> {{ habit.confirmedCount }}/365 cleared </span>
                     </div>
                     <button class="btn btn-primary btn-sm" @click="toggleHabit(habit)">
                       {{ isHabitDoneToday(habit) ? 'Cancel' : 'Done' }}
@@ -333,22 +317,15 @@ function openEditHabit(habit: Habit) {
   showCreateHabitForm.value = true
 }
 
-
 const categories = computed(() => [
   'all',
-  ...new Set(
-    habits.value
-      .map(h => h.category)
-      .filter(Boolean)
-  )
+  ...new Set(habits.value.map((h) => h.category).filter(Boolean)),
 ])
 
 const filteredHabits = computed(() => {
   if (currentCategory.value === 'all') return habits.value
 
-  return habits.value.filter(
-    h => h.category === currentCategory.value
-  )
+  return habits.value.filter((h) => h.category === currentCategory.value)
 })
 
 const dayMs = 24 * 60 * 60 * 1000
@@ -543,16 +520,11 @@ function closeHabitForm() {
 async function deleteHabit() {
   if (!habitToDelete.value) return
 
-  await fetchJson(
-    `/api/habit/${encodeURIComponent(habitToDelete.value.id)}`,
-    {
-      method: 'DELETE',
-    }
-  )
+  await fetchJson(`/api/habit/${encodeURIComponent(habitToDelete.value.id)}`, {
+    method: 'DELETE',
+  })
 
-  habits.value = habits.value.filter(
-    h => h.id !== habitToDelete.value?.id
-  )
+  habits.value = habits.value.filter((h) => h.id !== habitToDelete.value?.id)
 
   showDeleteModal.value = false
   habitToDelete.value = null
@@ -582,9 +554,7 @@ async function createHabit() {
       name: newHabit.value.name,
       description: newHabit.value.description,
       category:
-        newHabit.value.category === 'New'
-          ? newCategory.value.trim()
-          : newHabit.value.category,
+        newHabit.value.category === 'New' ? newCategory.value.trim() : newHabit.value.category,
       color: newHabit.value.color,
       is_good: newHabit.value.isGood,
     }),
@@ -615,9 +585,7 @@ async function updateHabit() {
       name: newHabit.value.name,
       description: newHabit.value.description,
       category:
-        newHabit.value.category === 'New'
-          ? newCategory.value.trim()
-          : newHabit.value.category,
+        newHabit.value.category === 'New' ? newCategory.value.trim() : newHabit.value.category,
       color: newHabit.value.color,
       is_good: newHabit.value.isGood,
     }),
@@ -639,7 +607,6 @@ async function updateHabit() {
   // сразу обновляем список
   await fetchHabits()
 }
-
 
 const perfectDays = computed(() =>
   habits.value.reduce((sum, habit) => sum + habit.confirmedCount, 0),
@@ -716,7 +683,6 @@ onMounted(async () => {
   gap: 8px;
 }
 
-
 .icon-btn {
   width: 30px;
   height: 30px;
@@ -733,47 +699,37 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
 
-  transition: .2s;
+  transition: 0.2s;
 }
-
 
 .icon-btn:hover {
   color: var(--text-primary);
   border-color: var(--accent-primary);
 }
 
-
 .icon-btn.delete:hover {
   color: #ff6b6b;
   border-color: #ff6b6b;
 }
-
 
 .delete-modal {
   width: min(100%, 380px);
   padding: 24px;
 }
 
-
 .delete-modal h3 {
-  margin:0 0 12px;
+  margin: 0 0 12px;
 }
-
 
 .delete-modal p {
   color: var(--text-secondary);
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
 
-
 .btn-danger {
-  background: linear-gradient(
-    135deg,
-    #ef4444,
-    #b91c1c
-  );
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
 
-  color:white;
+  color: white;
 }
 
 .card-surface {
@@ -1027,7 +983,7 @@ onMounted(async () => {
   color: var(--text-primary);
   font-size: 14px;
   font-family: 'Evolventa', sans-serif;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .habit-create-form select {
@@ -1052,7 +1008,7 @@ onMounted(async () => {
 .habit-input:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .habit-create-form select option {
@@ -1098,7 +1054,6 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   /* Мягкая CSS-маска. Края плавно растворяются в прозрачность на 24px сверху и снизу */
-
 }
 
 .habits-scroll-window {
@@ -1164,7 +1119,7 @@ onMounted(async () => {
    HABIT CARD & HEATMAP (365 ДНЕЙ)
 ========================================= */
 .habit-card {
-  background: rgba(255,255,255,.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
   padding: 20px;
   position: relative;
   transition:
@@ -1213,7 +1168,7 @@ onMounted(async () => {
   cursor: pointer;
 
   color: var(--text-secondary);
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .btn-danger {
@@ -1227,7 +1182,7 @@ onMounted(async () => {
 }
 
 .icon-btn:hover {
-  background: rgba(255,255,255,.08);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--accent-primary);
 }
 
